@@ -1,0 +1,63 @@
+part admins
+
+1. /admins (post)
+  description: create admin on Alta Store
+2. /admins (get)
+  description: get list of admins Alta Store
+3. /admins/login ()
+  description: Logs admin into the system
+4. /admins/logout (get)
+  description: Logs out current logged in admin session
+5. /admins/{username} (get)
+  description: get admin data by username
+6. /admins/{username} (put)
+  description: update admin
+7. /admins/{username} (delete)
+  description: softdelete admin
+
+part products
+
+1. /products (post)
+  description: create new product
+2. /products (get)
+  description: get list of products with pagination also can sort by field
+  body_request :
+    page (required)
+    per_page (required)
+    field (optional) --> name, price, created_at
+    sort (optional) --> ASC/DESC
+3. /products/category?name=buku (get) 
+  description: get list product by category
+4. /products/{:product_id} (get)
+  description: get product data
+5. /products/{:product_id} (put)
+  description: update product
+6. /products/{:product_id} (delete)
+  description: softdelete product
+
+part categories
+
+
+part users
+
+1. /users (get)
+  description: get list of customers Alta Store
+2. /users (post)
+  description: create user on Alta Store
+3. /users/login ()
+  description: Logs user into the system
+4. /users/logout (get)
+  description: Logs out current logged in user session
+5. /users/{username} (get)
+  description: get user data by username
+6. /users/{username} (put)
+  description: update user
+7. /users/{username} (delete)
+  description: softdelete user (fill deleted_at)
+8. /users/{username}/address (post)
+  description: add new address to user
+9. /users/{username}/address/{id_address} (put)
+  description: update address
+10. /users/{username}/address/{id_address} (delete)
+  description: softdelete user address
+11.

@@ -22,6 +22,8 @@ tags:
     description: All products sold by Alta Store
   - name: categories
     description: All categories of product sold by Alta Store
+  - name: admins
+    description: All admin that work for Alta Store
 paths:
   /pet:
     post:
