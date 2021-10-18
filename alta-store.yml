@@ -1,0 +1,470 @@
+openapi: '3.0.2'
+info:
+  description: 
+    'This is a Final Project for Advancing Career Program Alterra Academy.'
+  version: "1.0.0"
+  title: Alta Store API Contract
+  contact:
+    email: dev@alta.store.com
+servers:
+  - url: https://api.altastore.com/v1
+tags:
+  - name: Users
+    description: ""
+  - name : Users with address
+    description: ""
+  - name : Users with carts
+    description: ""
+  - name : Users with transactions
+    description: ""
+  - name : Admins
+    description: ""
+  - name : Products
+    description: ""
+  - name : Categories
+    description : ""
+paths:
+   /users/login:
+      post:
+       tags:
+         - "Users"
+       summary: Login customers into the system
+       requestBody:
+         content:
+           multipart/form-data:
+              schema:
+                type: object
+                required:
+                  - "username"
+                  - "password"
+                properties:
+                  username:
+                     type: string
+                     minimum: 6
+                     description: Customer username
+                  password:
+                     type: string
+                     minimum: 6
+                     description: Customer password
+       responses:
+         '200':
+            description: Customer authenticate
+            content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 200
+                  message: Login Success
+                  status: success
+                  data: 
+                    token: tokenvalue
+         '401':
+            description: Customer unauthenticate
+            content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 401
+                  message: Login Failed
+                  status: Failed
+                  data: 
+   /users: 
+      get: 
+        summary: Get all customer
+        tags:
+          - "Users"
+        responses:
+           '200':
+             description: "All customers data"
+             content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 200
+                  message: Login Success
+                  status: success
+                  data: 
+                    [
+                       {
+                          id_customer: 1,
+                          username   : mhakim,
+                          email: mhakim@gmail.com,
+                          phone_number: 08127809012,
+                          image : "https:...",
+                          address: [
+                          {
+                             street : 'Jln. Jendral Sudirman',
+                             lat : 910921090192,
+                             lon : 982209019209,
+                             name : "Hakim",
+                             phone_number: 081209120191,
+                             city: "Jakarta",
+                             province : "DKI Jakarta",
+                             postal_code : 30151,
+                             districts : kecamatan,
+                             default : 1,
+                             type : rumah,
+                          },
+                          {
+                             street : 'Jln. Sukabangun 2',
+                             lat : 910921090192,
+                             lon : 982209019209,
+                             name : "Hakim",
+                             phone_number: 081209120191,
+                             city: "Palembang",
+                             province : "Sumatera Selatan",
+                             postal_code : 30151,
+                             districts : Jakabaring,
+                             default : 0,
+                             type : rumah,
+                          }
+
+                          ]
+                       },
+                       {
+                          id_customer: 2,
+                          username   : Herdi,
+                          email: herdi@gmail.com,
+                          phone_number: 08127809012,
+                          image : "https:...",
+                          address: []
+                       }                           
+                    ]
+      post:
+        summary: Create customer
+        tags:
+          - "Users"
+        responses:
+          '201':
+            description : Customer created
+            content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 200
+                  message: Login Success
+                  status: success
+                  data: {
+                     name  : "M.Hakim Amransyah",
+                     id_customer: 1,
+                     email :  "hakim@gmail.com",
+                     username : "mhakim",
+                     phone_number: "",
+                       image: "https://..."
+                  }
+          '400':
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 400
+                  message: Invalid Request
+                  status: failed
+                  data: 
+        requestBody:
+          content:
+             multipart/form-data:
+                schema:
+                  type: object
+                  required:
+                    - "name"
+                    - "email"
+                    - "username"
+                    - "password"
+                    - "confirm_password"
+                  properties:
+                    name:
+                      minimum: 4
+                      maximum: 10
+                      type: string
+                    email: 
+                      type: string
+                    username:
+                      type: string
+                    phone_number:
+                      type: string
+                    password:
+                      type: string
+                    confirm_password:
+                      type: string
+      put:
+        tags:
+          - "Users"              
+        summary: Update data customers
+        responses:
+          '200' :
+             description : Data updated
+             content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 200
+                     message: Data updated
+                     status: success
+                     data: {
+                            name  : "M.Hakim Amransyah",
+                            id_customer: 1,
+                            email :  "hakim@gmail.com",
+                            username : "mhakim",
+                            phone_number: "",
+                            image: "https://..."
+                          }
+          '400' :
+             description : Invalid Request
+             content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 400
+                     message: Failed updated data
+                     status: failed
+                     data: 
+        requestBody:
+          content:
+            multipart/form-data:
+                schema:
+                  type: object
+                  required:
+                    - "username"
+                    - "name"
+                    - "phone_number"
+                    - "email"
+                  properties:
+                    username :
+                      type : string
+                    name :
+                      type : string
+                    email : 
+                      type : string
+                    phone_number:
+                      type : string
+                    Image : 
+                      type : string
+                      format : binary      
+      delete:
+        summary: Delete data customers
+        tags:
+          - "Users"
+        parameters:
+          - in : query
+            name: username
+            required: true
+        responses:
+           '200':
+              description: "Data deleted"
+              content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 200
+                     message: Success data
+                     status: success
+                     data: {
+                        username: mhakim
+                     }
+           '400':
+             description : "Invalid request"
+             content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 400
+                     message: Failed delete data
+                     status: failed
+                     data: 
+   /users/{username}:
+       get:
+         tags:
+           - "Users"
+         summary: "Get data customers by username"
+         parameters:
+           - in : query
+             name: username
+             required: true
+         responses:
+           '200':
+              description: "Success retrieved data"
+              content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 200
+                     message: Success data
+                     status: success
+                     data: {
+                          id_customer: 1,
+                          username   : mhakim,
+                          email: mhakim@gmail.com,
+                          phone_number: 08127809012,
+                          image : "https:...",
+                          address: [
+                          {
+                             street : 'Jln. Jendral Sudirman',
+                             lat : 910921090192,
+                             lon : 982209019209,
+                             name : "Hakim",
+                             phone_number: 081209120191,
+                             city: "Jakarta",
+                             province : "DKI Jakarta",
+                             postal_code : 30151,
+                             districts : kecamatan,
+                             default : 1,
+                             type : rumah,
+                          }]
+                     }
+           '400':
+             description : "Invalid request"
+             content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 400
+                     message: Failed delete data
+                     status: failed
+                     data: 
+   /users/{username}/carts:
+        post:
+          tags:
+            - "Users with carts"
+          summary : Create item in cart
+          parameters:
+             -  in : query
+                schema:
+                name : username
+                required : true
+          requestBody:
+            content:
+               multipart/form-data:
+                  schema:
+                   type: object
+                   required:
+                     - "id_customer"
+                     - "id_product"
+                     - "id_address"
+                     - "quantity"
+                   properties:
+                      id_customer:
+                        type : integer
+                      id_product:
+                        type : integer
+                      id_address:
+                        type : integer
+                      quantity:
+                        type : integer
+          responses:
+             '201':
+                 description: "Data cart created"
+                 content:
+                  application/json:
+                    schema:
+                     $ref : "#/components/schemas/Response"
+                    example:
+                       code: 201
+                       message: success created cart
+                       status: success
+                       data:   {
+                         id_shoping_cart : 1,
+                         id_shoping_cart_detail : 1,
+                         Quantity : 5,
+                         id_product: 1
+                      }
+             '400':
+                 description: "Invalid requested"
+                 content:
+                  application/json:
+                    schema:
+                     $ref : "#/components/schemas/Response"
+                    example:
+                     code: 400
+                     message: Failed created cart
+                     status: failed
+                     data:            
+        get:
+          summary: Get all item in cart
+          tags:
+            - "Users with carts" 
+        put:
+          tags:
+            - "Users with carts"
+          summary: Update item in cart 
+        delete:
+          tags:
+            - "Users with carts"
+          summary: Deleted item in cart
+   /user/{username}/transactions:
+     post:
+      tags:
+        - "Users with transactions"
+      summary: Create new transactions
+     put:
+       tags:
+         - "Users with transactions"
+       summary: Update data transaction
+   /user/{username}/transactions/status:
+      get:
+       tags:
+         - "Users with transactions"
+       summary: Get data transaction by status
+   /user/{username}/address:
+     post:
+       tags:
+         - "Users with address"
+       summary : Create new address
+     put:
+      tags:
+        - "Users with address"
+      summary: Update address
+     delete: 
+       tags:
+         - "Users with address"
+       summary: Delete customers address
+   /admins:
+      post:
+        tags:
+          - "Admins"
+        summary: Create new admins
+      get:
+        tags:
+          - "Admins"
+        summary: Get all data admins
+      put:
+        tags:
+          - "Admins"
+        summary: Update data admins
+      delete:
+        tags:
+         - "Admins"
+        summary : Delete data admins
+
+components:
+   schemas:
+    Response:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Http Code
+        message:
+          type: string
+          description: Mesage from server
+        status:
+          type: string
+          description: request status
+        data:
+          description: Data that client requested
+          type: object
+         
+          
+      
