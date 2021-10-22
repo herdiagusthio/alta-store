@@ -1,0 +1,1506 @@
+openapi: '3.0.2'
+info:
+  description: 
+    'This is a Final Project for Advancing Career Program Alterra Academy.'
+  version: "1.0.0"
+  title: Alta Store API Contract
+  contact:
+    email: dev@alta.store.com
+servers:
+  - url: https://api.altastore.com/v1
+tags:
+  - name: Users
+    description: ""
+  - name : Users with address
+    description: ""
+  - name : Users with carts
+    description: ""
+  - name : Users with transactions
+    description: ""
+  - name : Admins
+    description: ""
+  - name : Products
+    description: ""
+  - name : Categories
+    description : ""
+paths:
+   /users/login:
+      post:
+       tags:
+         - "Users"
+       summary: Login customers into the system
+       requestBody:
+         content:
+           multipart/form-data:
+              schema:
+                type: object
+                required:
+                  - "username"
+                  - "password"
+                properties:
+                  username:
+                     type: string
+                     minimum: 6
+                     description: Customer username
+                  password:
+                     type: string
+                     minimum: 6
+                     description: Customer password
+       responses:
+         '200':
+            description: Customer authenticated
+            content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 200
+                  message: Login Success
+                  status: success
+                  data: 
+                     id_customer: 1
+                     username   : mhakim
+                     name : M.Hakim Amransyah
+                     email: mhakim@gmail.com
+                     phone_number: 08127809012
+                     image : "https:..."
+                     token: tokenvalue
+         '401':
+            description: Customer unauthorize
+            content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 401
+                  message: Login Failed, verify your email account
+                  status: Failed
+                  data : ""
+         '400':
+            description: Invalid Request
+            content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 401
+                  message: Login Failed Invalid Request
+                  status: Failed
+                  data: 
+   /users: 
+      get: 
+        summary: Get all customer
+        tags:
+          - "Users"
+        responses:
+           '200':
+             description: "All customers data"
+             content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 200
+                  message: Login Success
+                  status: success
+                  data: 
+                    [
+                       {
+                          id_customer: 1,
+                          username   : mhakim,
+                          email: mhakim@gmail.com,
+                          phone_number: 08127809012,
+                          name : M.Hakim Amransyah,
+                          image : "https:...",
+                          address: [
+                          {
+                             id_address : 1,
+                             street : 'Jln. Jendral Sudirman',
+                             lat : 910921090192,
+                             lon : 982209019209,
+                             name : "Hakim",
+                             phone_number: 081209120191,
+                             city: "Jakarta",
+                             province : "DKI Jakarta",
+                             postal_code : 30151,
+                             districts : kecamatan,
+                             default : 1,
+                             type : housing,
+                          },
+                          {
+                             id_address : 2,
+                             street : 'Jln. Sukabangun 2',
+                             lat : 910921090192,
+                             lon : 982209019209,
+                             name : "Hakim",
+                             phone_number: 081209120191,
+                             city: "Palembang",
+                             province : "Sumatera Selatan",
+                             postal_code : 30151,
+                             districts : Jakabaring,
+                             default : 0,
+                             type : rumah,
+                          }
+
+                          ]
+                       },
+                       {
+                          id_customer: 2,
+                          username   : herdi,
+                          name : "Herdhi Agusthio",
+                          email: herdi@gmail.com,
+                          phone_number: 08127809012,
+                          image : "https:...",
+                          address: []
+                       }                           
+                    ]
+      post:
+        summary: Create customer
+        tags:
+          - "Users"
+        responses:
+          '201':
+            description : Customer created
+            content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 200
+                  message: Login Success
+                  status: success
+                  data: {
+                     name  : "M.Hakim Amransyah",
+                     id_customer: 1,
+                     email :  "hakim@gmail.com",
+                     username : "mhakim",
+                     phone_number: "09098079876798",
+                     image: "https://..."
+                  }
+          '400':
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 400
+                  message: Invalid Request
+                  status: failed
+                  data: 
+        requestBody:
+          content:
+             multipart/form-data:
+                schema:
+                  type: object
+                  required:
+                    - "name"
+                    - "email"
+                    - "username"
+                    - "password"
+                    - "confirm_password"
+                    - "phone_number"
+                  properties:
+                    name:
+                      minimum: 4
+                      maximum: 10
+                      type: string
+                    email: 
+                      type: string
+                    username:
+                      type: string
+                    phone_number:
+                      type: string
+                    password:
+                      type: string
+                    confirm_password:
+                      type: string
+   /users/{username}/verification:
+     post :
+      tags :
+      - "Users"
+      summary: Verify customers account 
+      responses:
+        '200':
+          description : Account verified
+          content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 200
+                  message: Account verified
+                  status: success
+                  data: {
+                      name  : "M.Hakim Amransyah",
+                      id_customer: 1,
+                      email :  "hakim@gmail.com",
+                      username : "mhakim",
+                      phone_number: "09098079876798",
+                      image: "https://..."
+                  }
+        '401':
+           description : kode OTP expired
+           content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 401
+                  message: Expired
+                  status: failed
+                  data:
+        '400':
+          description : Invalid Request
+          content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 400
+                  message: Invalid Request
+                  status: failed
+                  data:
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type : object
+              required:
+                - "otp"
+              properties:
+                otp : 
+                 type : integer
+      parameters:
+        - in : path
+          name : username
+          required: true
+          schema : 
+            type : string
+   /users/{username}:
+       get:
+         tags:
+           - "Users"
+         summary: "Get data customers by username"
+         parameters:
+           - in : path
+             name: username
+             required: true
+             schema : 
+               type : string
+         responses:
+           '200':
+              description: "Success retrieved data"
+              content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 200
+                     message: Success data
+                     status: success
+                     data: {
+                          id_customer: 1,
+                          username   : mhakim,
+                          name : M.Hakim Amransyah,
+                          email: mhakim@gmail.com,
+                          phone_number: 08127809012,
+                          image : "https:...",
+                          address: [
+                          {
+                             id_address : 1,
+                             street : 'Jln. Jendral Sudirman',
+                             lat : 910921090192,
+                             lon : 982209019209,
+                             name : "Hakim",
+                             phone_number: 081209120191,
+                             city: "Jakarta",
+                             province : "DKI Jakarta",
+                             postal_code : 30151,
+                             districts : kecamatan,
+                             default : 1,
+                             type : housing,
+                          },
+                             {
+                             id_address : 2,
+                             street : 'Jln. Sukabangun 2',
+                             lat : 910921090192,
+                             lon : 982209019209,
+                             name : "Hakim",
+                             phone_number: 081209120191,
+                             city: "Palembang",
+                             province : "Sumatera Selatan",
+                             postal_code : 30151,
+                             districts : Jakabaring,
+                             default : 0,
+                             type : rumah,
+                          }
+                          
+                          ]
+                     }
+           '400':
+             description : "Invalid request"
+             content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 400
+                     message: Failed delete data
+                     status: failed
+                     data: 
+       delete:
+        summary: Delete data customers
+        tags:
+          - "Users"
+        parameters:
+          - in : path
+            name: username
+            required: true
+            schema : 
+               type : string
+        responses:
+           '200':
+              description: "Data deleted"
+              content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 200
+                     message: Success data
+                     status: success
+                     data: {
+                          id_customer: 1,
+                          username   : mhakim,
+                          name : M.Hakim Amransyah,
+                          email: mhakim@gmail.com,
+                          phone_number: 08127809012,
+                          image : "https:...",
+                     }
+           '400':
+             description : "Invalid request"
+             content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 400
+                     message: Failed delete data
+                     status: failed
+                     data: 
+       put:
+        tags:
+          - "Users"              
+        summary: Update data customers
+        responses:
+          '200' :
+             description : Data updated
+             content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 200
+                     message: Data updated
+                     status: success
+                     data: {
+                            name  : "M.Hakim Amransyah",
+                            id_customer: 1,
+                            email :  "hakim@gmail.com",
+                            username : "mhakim",
+                            phone_number: "",
+                            image: "https://..."
+                          }
+          '400' :
+             description : Invalid Request
+             content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 400
+                     message: Failed updated data
+                     status: failed
+                     data: 
+        parameters:
+          - in : path
+            required: true
+            name : username
+            schema :
+              type : string
+        requestBody:
+          content:
+            multipart/form-data:
+                schema:
+                  type: object
+                  required:
+                    - "name"
+                    - "phone_number"
+                    - "email"
+                  properties:
+                    name :
+                      type : string
+                    email : 
+                      type : string
+                    phone_number:
+                      type : string
+                    Image : 
+                      type : string
+                      format : binary      
+   /users/{username}/carts:
+        post:
+          tags:
+            - "Users with carts"
+          summary : Create item in cart
+          parameters:
+             -  in : path
+                schema:
+                name : username
+                required : true
+          requestBody:
+            content:
+               multipart/form-data:
+                  schema:
+                   type: object
+                   required:
+                     - "id_customer"
+                     - "id_product"
+                     - "quantity"
+                   properties:
+                      id_customer:
+                        type : integer
+                      id_product:
+                        type : integer
+                      quantity:
+                        type : integer
+          responses:
+             '201':
+                 description: "Data cart created"
+                 content:
+                  application/json:
+                    schema:
+                     $ref : "#/components/schemas/Response"
+                    example:
+                       code: 201
+                       message: success created cart
+                       status: success
+                       data:  {
+                                  id_carts_detail : 1,
+                                  id_product : 1,
+                                  product_title :  Golang for dummies,
+                                  product_image : "https://...",
+                                  quantity : 1,
+                                  category : book,
+                                  product_price : 50000
+                                }
+             '400':
+                 description: "Invalid requested"
+                 content:
+                  application/json:
+                    schema:
+                     $ref : "#/components/schemas/Response"
+                    example:
+                     code: 400
+                     message: Failed created cart
+                     status: failed
+                     data:            
+        get:
+          summary: Get all item in cart
+          tags:
+            - "Users with carts" 
+          responses:
+            '200':
+               description : "Success get all carts data"
+               content:
+                application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 200
+                     message: All item in carts
+                     status: success
+                     data: {
+                              id_carts: 3,
+                              status : carts,
+                              shipping_price : 100000, 
+                              address: {
+                                  id_address : 1,
+                                  street : "Jln. Srijaya Negara",
+                                  lat: "",
+                                  lon: "",
+                                  id_customers : 1,
+                                  name : "M.Hakim Amransyah",
+                                  phone_number : "08127182798128",
+                                  city : "Palembang",
+                                  province : "Sumatera Selatan",
+                                  postal_code : "30151",
+                                  districts : "Jakabaring",
+                                  type : "housing"
+                              }, 
+                              count : 2,
+                              item  : [
+                                {
+                                  id_carts_detail : 1,
+                                  id_product : 1,
+                                  product_title :  Golang for dummies,
+                                  product_image : "https://...",
+                                  quantity : 4,
+                                  category : book,
+                                  product_price : 50000
+                                },
+                                {
+                                  id_carts_detail : 2,
+                                  id_product : 2,
+                                  product_title :  Adidas Hoodies ,
+                                  product_image : "https://...",
+                                  quantity : 1,
+                                  category : clothes,
+                                  product_price : 50000
+                                }
+                              ],
+                             total_price : 250000
+                           }
+            '400':
+               description : "Invalid request"
+               content:
+                application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 400
+                     message: Invalid Request
+                     status: failed
+                     data:
+          parameters:
+            - in : path
+              name : username
+              required: true
+              schema:
+                type : string
+        put:
+          tags:
+            - "Users with carts"
+          summary : Update carts properties
+          responses:
+            '200':
+              description : Carts properties updated
+              content:
+                application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 200
+                     message: Carts properties updated
+                     status: success
+                     data: {
+                              id_carts: 3,
+                              status : carts,
+                              shipping_price : 100000, 
+                              address: {
+                                  id_address : 2,
+                                  street : "Jln. Jendral Sudirman",
+                                  lat: "9871208102",
+                                  lon: "98201802",
+                                  name : "Herdhi Agusthio",
+                                  phone_number : "08127182798128",
+                                  city : "Jakarta",
+                                  province : "DKI Jakarta",
+                                  postal_code : "30151",
+                                  districts : "xxx",
+                                  type : "office"
+                              }, 
+                              count : 2,
+                              item  : [
+                                {
+                                  id_carts_detail : 1,
+                                  id_product : 1,
+                                  product_title :  Golang for dummies,
+                                  product_image : "https://...",
+                                  quantity : 4,
+                                  category : book,
+                                  product_price : 50000
+                                },
+                                {
+                                  id_carts_detail : 2,
+                                  id_product : 2,
+                                  product_title :  Adidas Hoodies ,
+                                  product_image : "https://...",
+                                  quantity : 1,
+                                  category : clothes,
+                                  product_price : 50000
+                                }
+                              ],
+                             total_price : 250000
+                           }
+            '400':
+              description : Invalid Request
+              content:
+                application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 400
+                     message: Invalid Request
+                     status: failed
+                     data:
+          requestBody:
+            content:
+              multipart/form-data:
+                schema:
+                  type : object
+                  required:
+                    - "id_address"
+                  properties:
+                    id_address : 
+                       type : integer
+          parameters:
+            - in : path
+              name : username
+              required: true
+              schema:
+                type : string
+   /users/{username}/carts/{id_carts_detail}:
+     delete:
+          tags:
+            - "Users with carts"
+          summary: Deleted item in cart
+          responses:
+            '200':
+              description : Item deleted in carts
+              content:
+                application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 200
+                     message: Item carts deleted
+                     status: success
+                     data:  {
+                      id_carts_detail : 1,
+                                  id_product : 1,
+                                  product_title :  Golang for dummies,
+                                  product_image : "https://...",
+                                  quantity : 1,
+                                  category : book,
+                                  product_price : 50000
+                     }
+            '400':
+              description : Invalid request
+              content:
+                application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 400
+                     message: Invalid Request
+                     status: failed
+                     data:  
+          parameters:
+            - in : path
+              name : username
+              required: true
+              schema : 
+                type : string
+            - in : path
+              name : id_carts_detail
+              required: true
+              schema : 
+                type : integer
+     put:
+          tags:
+            - "Users with carts"
+          summary: Update item in cart
+          responses:
+            '200': 
+              description : item in carts updated
+              content:
+                application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 200
+                     message: Item carts updated
+                     status: success
+                     data:  {
+                                  id_carts_detail : 1,
+                                  id_product : 1,
+                                  product_title :  Golang for dummies,
+                                  product_image : "https://...",
+                                  quantity : 1,
+                                  category : book,
+                                  product_price : 50000
+                                }
+            '400' :
+               description : Invalid request
+               content:
+                application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 400
+                     message: Invalid Request
+                     status: failed
+                     data:
+          requestBody:
+            content:
+              multipart/form-data:
+                schema:
+                  type : object
+                  required:
+                    - "quantity"
+                  properties:
+                    quantity :
+                      type : integer
+          parameters:
+            - in : path
+              name : username
+              required: true 
+              schema:
+                type : string
+            - in : path
+              name : id_carts_detail
+              required: true
+              schema :
+                type : integer
+   /user/{username}/transactions:
+     post:
+      tags:
+        - "Users with transactions"
+      summary: Create new transactions (checkout)
+      parameters:
+        - in : path
+          name : username
+          required: true
+          schema :
+            type : string
+      responses:
+        '201':
+          description : Transaction created 
+          content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 200
+                  message: Login Success
+                  status: success
+                  data: {
+                     id_transactions : 1,
+                     shipping_price : 100000, 
+                     id_carts        : 2,
+                     invoice_number  : 908120709821,
+                     status          : checkout,
+                     created_at      : "2021-08-11 21:08:30",
+                     paid_at          : "",
+                     cancel_at       : "",
+                     sent_at         : "",
+                     updated_by      : "systems",
+                     total_price     : 800000,
+                  }
+        '400':
+          description : Invalid Request
+          content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 400
+                  message: Invalid Request
+                  status: failed
+                  data:
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type : object
+              required:
+                - "id_carts"
+                - "updated_by"
+              properties:
+                id_carts:
+                  type : integer
+                updated_by:
+                  type : string
+                  enum:
+                    - Systems
+                    - Admins            
+     put:
+       tags:
+         - "Users with transactions"
+       summary: Update data transaction
+       responses:
+         '201':
+           description : Transaction updated
+           content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 200
+                  message: Transactions updated
+                  status: success
+                  data: {
+                      id_transactions : 1,
+                      shipping_price : 100000, 
+                      invoice_number : 09120928019872,
+                      paid_at : "",
+                      cancel_at : "",
+                      status : "sent",
+                      created_at : "2021-08-12 08:00:55", 
+                      sent_at : "2021-08-20 14:00:55",
+                  }
+         '400' :
+           description : Invalid Request
+           content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 400
+                  message: Invalid Request
+                  status: failed
+                  data:
+       requestBody:
+         content:
+           multipart/form-data:
+             schema:
+               type : object
+               required:
+                 - "id_transactions"
+                 - "status"
+                 - "paid_at"
+                 - "cancel_at"
+                 - "sent_at"
+               properties:
+                 id_transactions:
+                   type : integer
+                 status:
+                   type : string
+                   enum:
+                     - paid
+                     - sent
+                     - cancel
+                 paid_at :
+                    type : string
+                 cancel_at :
+                    type : string
+                 sent_at :
+                    type : string
+       parameters:
+         - in : path 
+           name : username
+           required: true
+           schema:
+             type : string
+   /user/{username}/transactions/status/{status}:
+      get:
+       tags:
+         - "Users with transactions"
+       summary: Get data transaction by status
+       responses:
+         '200':
+           description : Success get data transaction
+           content:
+                application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 200
+                     message: All item transaction in {status}
+                     status: success
+                     data: [
+                        {
+                          id_transactions : 1,
+                          item : {
+                            address : {
+                              id_address : 2,
+                              street : 'Jln. Jendral Sudirman',
+                              lat : 910921090192,
+                              lon : 982209019209,
+                              name : "Hakim",
+                              phone_number: 081209120191,
+                              city: "Jakarta",
+                              province : "DKI Jakarta",
+                              postal_code : 30151,
+                              districts : kecamatan,
+                              default : 1,
+                              type : housing,
+                            },
+                            products : [
+                               {
+                                  id_carts_detail : 1,
+                                  id_product : 1,
+                                  product_title :  Golang for dummies,
+                                  product_image : "https://...",
+                                  quantity : 4,
+                                  category : book,
+                                  product_price : 50000
+                                },
+                                {
+                                  id_carts_detail : 2,
+                                  id_product : 2,
+                                  product_title :  React for dummies,
+                                  product_image : "https://...",
+                                  quantity : 4,
+                                  category : book,
+                                  product_price : 50000
+                                },
+                                {
+                                  id_carts_detail : 3,
+                                  id_product : 13,
+                                  product_title :  C++ for dummies,
+                                  product_image : "https://...",
+                                  quantity : 2,
+                                  category : book,
+                                  product_price : 50000
+                                },
+                                
+                            ]
+                          },
+                          invoice_number : 09120928019872,
+                          shipping_price : 100000, 
+                          pay_at : "2021-08-12 11:30:05",
+                          cancel_at : "",
+                          status : "paid",
+                          created_at : "2021-08-12 08:00:55", 
+                          sent_at : "",
+                        },
+                         {
+                          id_transactions : 2,
+                          item : {
+                            address : {
+                              id_address : 2,
+                              street : 'Jln. Jendral Sudirman',
+                              lat : 910921090192,
+                              lon : 982209019209,
+                              name : "Hakim",
+                              phone_number: 081209120191,
+                              city: "Jakarta",
+                              province : "DKI Jakarta",
+                              postal_code : 30151,
+                              districts : kecamatan,
+                              default : 1,
+                              type : housing,
+                            },
+                            products : [
+                               {
+                                  id_carts_detail : 1,
+                                  id_product : 1,
+                                  product_title :  Corel for dummies,
+                                  product_image : "https://...",
+                                  quantity : 4,
+                                  category : book,
+                                  product_price : 50000
+                                },
+                            ]
+                          },
+                          invoice_number : 120902397290837,
+                          pay_at : "2021-08-12 11:30:05",
+                          shipping_price : 100000, 
+                          cancel_at : "",
+                          status : "paid",
+                          created_at : "2021-08-12 08:00:55", 
+                          sent_at : "",
+                        },
+                     ]
+         '400':
+            description : Invalid Request
+            content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 400
+                  message: Invalid Request
+                  status: failed
+                  data:
+       parameters:
+         - in : path
+           name : username
+           required: true
+           schema:
+             type : string
+         - in   : path
+           name : status
+           required: true
+           schema:
+             type : string
+             enum:
+               - checkout
+               - cancel
+               - paid
+               - sent
+   /user/{username}/transactions/item/{id_carts_detail}:
+      get:
+       tags:
+         - "Users with transactions"
+       summary: Get data transaction by id_carts_detail
+       responses:
+         '200':
+            description : Success get data transacation by id_carts_detail
+            content:
+                application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 200
+                     message: All item transaction in {status}
+                     status: success
+                     data: 
+                        {
+                          id_transactions : 1,
+                          item : {
+                              address : {
+                              id_address : 2,
+                              street : 'Jln. Jendral Sudirman',
+                              lat : 910921090192,
+                              lon : 982209019209,
+                              name : "Hakim",
+                              phone_number: 081209120191,
+                              city: "Jakarta",
+                              province : "DKI Jakarta",
+                              postal_code : 30151,
+                              districts : kecamatan,
+                              default : 1,
+                              type : housing,
+                            },
+                            products : 
+                               {
+                                  id_carts_detail : 1,
+                                  id_product : 1,
+                                  product_title :  Golang for dummies,
+                                  product_image : "https://...",
+                                  quantity : 4,
+                                  category : book,
+                                  product_price : 50000
+                                },
+                          },
+                          invoice_number : 09120928019872,
+                            shipping_price : 100000, 
+                          pay_at : "2021-08-12 11:30:05",
+                          cancel_at : "",
+                          status : "paid",
+                          created_at : "2021-08-12 08:00:55", 
+                          sent_at : "",
+                        }
+                     
+         '400' :
+            description : "Invalid requested"
+       parameters:
+         - in : path
+           name : username
+           required: true
+           schema:
+             type : string
+         - in   : path
+           name : id_cart_detail
+           required: true
+           schema:
+             type : integer
+   /user/{username}/address:
+     post:
+       tags:
+         - "Users with address"
+       summary : Create new address
+       responses:
+         '201':
+           description : Address created
+           content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 201
+                     message: Data created
+                     status: success
+                     data: {
+                        street : "Jln. Srijaya Negara",
+                        lat: "",
+                        lon: "",
+                        id_customers : 1,
+                        name : "M.Hakim Amransyah",
+                        phone_number : "08127182798128",
+                        city : "Palembang",
+                        province : "Sumatera Selatan",
+                        postal_code : "30151",
+                        districts : "Jakabaring",
+                        type : "housing"
+                     }
+         '401':
+           description : Invalid Request
+           content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 400
+                     message: Invalid Request
+                     status: failed
+                     data: 
+       parameters:
+         - in : path
+           name : username
+           required: true
+           schema:
+             type : string
+             example:
+               mhakim
+       requestBody:
+         content:
+           multipart/form-data:
+             schema:
+               type : object
+               required:
+                 - "street"
+                 - "id_customers"
+                 - "name"
+                 - "phone_number"
+                 - "city"
+                 - "province"
+                 - "postal_code"
+                 - "districts"
+                 - "detail"
+                 - "lat"
+                 - "lon"
+                 - "type"
+               properties:
+                 street:
+                   type : string
+                 lat :
+                   type : string
+                 lon : 
+                  type : string
+                 id_customers:
+                  type : integer  
+                 name : 
+                  type : string
+                 phone_number : 
+                   type : string
+                 city : 
+                  type : string 
+                 province : 
+                  type : string
+                 postal_code : 
+                  type : integer
+                 districts :
+                   type : string
+                 detail :
+                   type : string
+                 type : 
+                   type : string
+                   enum:
+                     - housing
+                     - office             
+   /user/{username}/address/{id_address}:
+     get : 
+       tags:
+         - "Users with address"
+       summary: Get address based on id_address
+       responses:
+         '200' : 
+           description : Request success
+           content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 200
+                  message: Login Success
+                  status: success
+                  data: {
+                             id_address : 1,
+                             street : 'Jln. Jendral Sudirman',
+                             lat : 910921090192,
+                             lon : 982209019209,
+                             name : "Hakim",
+                             phone_number: 081209120191,
+                             city: "Jakarta",
+                             province : "DKI Jakarta",
+                             postal_code : 30151,
+                             districts : kecamatan,
+                             default : 1,
+                             type : housing,
+                          }
+         '400' :
+           description : Invalid Request
+           content:
+              application/json:
+                schema:
+                  $ref : "#/components/schemas/Response"
+                example:
+                  code: 400
+                  message: Invalid Request
+                  status: failed
+                  data:
+       parameters:
+         - in : path
+           name : username
+           required: true
+           schema:
+             type : string
+         - in : path
+           name : id_address
+           required: true
+           schema:
+             type : integer          
+     delete: 
+       tags:
+         - "Users with address"
+       summary: Delete customers address
+       responses:
+         '200':
+            description : Address deleted
+            content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 200
+                     message: Address deleted
+                     status: success
+                     data: {
+                             id_address : 1,
+                             street : 'Jln. Jendral Sudirman',
+                             lat : 910921090192,
+                             lon : 982209019209,
+                             name : "Hakim",
+                             phone_number: 081209120191,
+                             city: "Jakarta",
+                             province : "DKI Jakarta",
+                             postal_code : 30151,
+                             districts : kecamatan,
+                             default : 1,
+                             type : housing,
+                     }
+         '400':
+            description : Invalid Request
+            content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 400
+                     message: Invalid Request
+                     status: failed
+                     data: 
+       parameters:
+         - in : path
+           name : username
+           required: true
+           schema :
+            type : string
+         - in : path
+           name : id_address
+           required: true
+           schema : 
+             type : string
+     put:
+      tags:
+        - "Users with address"
+      summary: Update address
+      parameters:
+        - in : path
+          required: true
+          name : username
+          schema: 
+            type : string
+        - in : path
+          required: true
+          name : id_address
+          schema: 
+            type : integer
+      responses:
+        '200': 
+          description : Data address updated
+          content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 200
+                     message: Data updated
+                     status: success
+                     data: {
+                        street : "Jln. Srijaya Negara",
+                        lat: "",
+                        lon: "",
+                        id_address : 1,
+                        name : "M.Hakim Amransyah",
+                        phone_number : "08127182798128",
+                        city : "Palembang",
+                        province : "Sumatera Selatan",
+                        postal_code : "30151",
+                        districts : "Jakabaring",
+                        type : "housing"
+                     }
+        '400':
+          description : Invalid Request
+          content:
+               application/json:
+                  schema:
+                     $ref : "#/components/schemas/Response"
+                  example:
+                     code: 400
+                     message: Invalid Request
+                     status: failed
+                     data: 
+      requestBody:
+         content:
+           multipart/form-data:
+             schema:
+              type : object
+              required:
+                 - "street"
+                 - "id_address"
+                 - "name"
+                 - "phone_number"
+                 - "city"
+                 - "province"
+                 - "lat"
+                 - "lon"
+                 - "postal_code"
+                 - "districts"
+                 - "type"
+                 - "detail"
+              properties:
+                id_address:
+                  type : string
+                street:
+                   type : string
+                lat :
+                   type : string
+                lon : 
+                  type : string
+                name : 
+                  type : string
+                phone_number : 
+                   type : string
+                city : 
+                  type : string 
+                province : 
+                  type : string
+                postal_code : 
+                  type : integer
+                districts :
+                   type : string
+                detail :
+                   type : string
+                type : 
+                   type : string
+                   enum:
+                     - housing
+                     - office 
+   /admins:
+      post:
+        tags:
+          - "Admins"
+        summary: Create new admins
+      get:
+        tags:
+          - "Admins"
+        summary: Get all data admins
+      put:
+        tags:
+          - "Admins"
+        summary: Update data admins
+      delete:
+        tags:
+         - "Admins"
+        summary : Delete data admins
+
+components:
+   schemas:
+    Address:
+      type: object
+      properties:
+        street:
+          type : string
+          minimum: 5
+          maximum : 20
+          description: Customers street's name
+        lat :
+          type : string
+          description: Customers address latitude
+        lon : 
+          type : string
+          description: Customers address longitude
+        id_customers:
+          type : integer
+          description: id Customers  
+        name : 
+          type : string
+          description: Customers address recipient's name 
+        phone_number : 
+          type : string
+          description: Customers address phone number
+        city : 
+          type : string 
+          description: Customers address city
+        province : 
+          type : string
+          description: Customers address province
+        postal_code : 
+          type : integer
+          description: Customers address postal code
+        districts :
+          type : string
+          description: Customers address district (kecamatan)
+        detail :
+          type : string
+          description: Customers address detail
+        type : 
+          type : string
+          enum:
+            - housing
+            - office         
+    Customers:
+      type : object
+      properties:
+        name:
+          minimum: 4
+          maximum: 10
+          type: string
+          description: Customers name
+        email: 
+          type: string
+          description: Customers email
+        username:
+          type: string
+          description: Customers username
+        phone_number:
+          type: string
+          description: Customers phone number
+        password:
+          type: string
+          description : Customers password 
+        image:
+          type : string
+          format: binary
+          description : Customers image
+        verified:
+          type : integer
+          enum:
+            - 1 (verified)
+            - 0 (not verified)
+        token:
+          type : string
+          description: Customers jwt token
+    Response:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Http Code
+        message:
+          type: string
+          description: Mesage from server
+        status:
+          type: string
+          description: request status
+        data:
+          description: Data that client requested
+          type: object
+         
+          
+      
