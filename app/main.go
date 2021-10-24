@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"strconv"
 	"time"
 
 	migration "altaStore/modules/migration"
@@ -19,29 +18,29 @@ import (
 
 func newDatabaseConnection(config *config.AppConfig) *gorm.DB {
 
-	// configDB := map[string]string{
-	// 	"DB_Username": os.Getenv("ALTASTORE_DB_USERNAME"),
-	// 	"DB_Password": os.Getenv("ALTASTORE_DB_PASSWORD"),
-	// 	"DB_Port":     os.Getenv("ALTASTORE_DB_PORT"),
-	// 	"DB_Host":     os.Getenv("ALTASTORE_DB_ADDRESS"),
-	// 	"DB_Name":     os.Getenv("ALTASTORE_DB_NAME"),
-	// }
-
-	// connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
-	// 	configDB["DB_Username"],
-	// 	configDB["DB_Password"],
-	// 	configDB["DB_Host"],
-	// 	configDB["DB_Port"],
-	// 	configDB["DB_Name"])
+	configDB := map[string]string{
+		"DB_Username": os.Getenv("ALTASTORE_DB_USERNAME"),
+		"DB_Password": os.Getenv("ALTASTORE_DB_PASSWORD"),
+		"DB_Port":     os.Getenv("ALTASTORE_DB_PORT"),
+		"DB_Host":     os.Getenv("ALTASTORE_DB_ADDRESS"),
+		"DB_Name":     os.Getenv("ALTASTORE_DB_NAME"),
+	}
 
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		config.DbUsername,
-		config.DbPassword,
-		config.DbAddress,
-		strconv.Itoa(config.DbPort),
-		config.DbName)
+		configDB["DB_Username"],
+		configDB["DB_Password"],
+		configDB["DB_Host"],
+		configDB["DB_Port"],
+		configDB["DB_Name"])
 
-	fmt.Println(connectionString)
+	// connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+	// 	config.DbUsername,
+	// 	config.DbPassword,
+	// 	config.DbAddress,
+	// 	strconv.Itoa(config.DbPort),
+	// 	config.DbName)
+
+	// fmt.Println(connectionString)
 
 	db, e := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
 	if e != nil {
