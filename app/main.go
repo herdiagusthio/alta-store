@@ -1,6 +1,7 @@
 package main
 
 import (
+	"altaStore/api"
 	"altaStore/config"
 	"context"
 	"fmt"
@@ -8,7 +9,10 @@ import (
 	"os/signal"
 	"time"
 
+	userController "altaStore/api/v1/user"
+	userService "altaStore/business/user"
 	migration "altaStore/modules/migration"
+	userRepository "altaStore/modules/user"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
@@ -58,16 +62,16 @@ func main() {
 	fmt.Println(config)
 
 	//initialize database connection based on given config
-	newDatabaseConnection(config)
+	dbConnection := newDatabaseConnection(config)
 
-	// //initiate user repository
-	// userRepo := userRepository.NewGormDBRepository(dbConnection)
+	//initiate user repository
+	userRepo := userRepository.NewGormDBRepository(dbConnection)
 
-	// //initiate user service
-	// userService := userService.NewService(userRepo)
+	//initiate user service
+	userService := userService.NewService(userRepo)
 
-	// //initiate user controller
-	// userController := userController.NewController(userService)
+	//initiate user controller
+	userController := userController.NewController(userService)
 
 	// //initiate pet repository
 	// petRepo := petRepository.NewGormDBRepository(dbConnection)
@@ -87,8 +91,8 @@ func main() {
 	//create echo http
 	e := echo.New()
 
-	// //register API path and handler
-	// // api.RegisterPath(e, authController, userController, petController)
+	//register API path and handler
+	api.RegisterPath(e, userController)
 
 	// run server
 	go func() {

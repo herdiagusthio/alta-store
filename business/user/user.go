@@ -3,7 +3,7 @@ package user
 import "time"
 
 type User struct {
-	ID          int
+	ID          uint
 	Name        string
 	Email       string
 	PhoneNumber string
@@ -16,7 +16,7 @@ type User struct {
 
 //NewUser create new User
 func NewUser(
-	id int,
+	id uint,
 	name string,
 	email string,
 	phoneNumber string,

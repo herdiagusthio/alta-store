@@ -1,9 +1,11 @@
 package migration
 
 import (
+	"altaStore/modules/user"
+
 	"gorm.io/gorm"
 )
 
 func InitMigrate(db *gorm.DB) {
-	// db.AutoMigrate(&user.UserTable{}, &pet.PetTable{})
+	db.AutoMigrate(&user.User{})
 }
