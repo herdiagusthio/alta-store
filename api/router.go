@@ -1,32 +1,23 @@
 package api
 
-//RegisterPath Register all API with routing path
-// func RegisterPath(e *echo.Echo, authController *auth.Controller, userController *user.Controller, petController *pet.Controller) {
-// 	if authController == nil || userController == nil || petController == nil {
-// 		panic("Controller parameter cannot be nil")
-// 	}
+import (
+	"altaStore/api/middleware"
+	"altaStore/api/v1/admins"
 
-// 	//authentication with Versioning endpoint
-// 	authV1 := e.Group("v1/auth")
-// 	authV1.POST("/login", authController.Login)
+	"github.com/labstack/echo/v4"
+)
 
-// 	//user with Versioning endpoint
-// 	userV1 := e.Group("v1/users")
-// 	userV1.GET("/:id", userController.FindUserByID)
-// 	userV1.GET("", userController.FindAllUser)
-// 	userV1.POST("", userController.InsertUser)
-// 	userV1.PUT("/:id", userController.UpdateUser)
-
-// 	//pet with Versioning endpoint
-// 	petV1 := e.Group("v1/pets")
-// 	petV1.Use(middleware.JWTMiddleware())
-// 	petV1.GET("/:id", petController.FindPetByID)
-// 	petV1.GET("", petController.FindAllPet)
-// 	petV1.POST("", petController.InsertPet)
-// 	petV1.PUT("/:id", petController.UpdatePet)
-
-// 	//health check
-// 	e.GET("/health", func(c echo.Context) error {
-// 		return c.NoContent(200)
-// 	})
-// }
+func RegisterPath(e *echo.Echo, adminController *admins.Controller) {
+	e.POST("admins/login", adminController.LoginController)
+	e.POST("adminmockdata", adminController.CreateAdminController)
+	admin := e.Group("admins")
+	admin.Use(middleware.JWTMiddleware())
+	admin.GET("", adminController.GetAdminController)
+	admin.GET("/:username", adminController.GetAdminByUsername)
+	admin.POST("", adminController.CreateAdminController)
+	admin.PUT("/:username", adminController.ModifyAdminController)
+	//health check
+	e.GET("/health", func(c echo.Context) error {
+		return c.NoContent(200)
+	})
+}

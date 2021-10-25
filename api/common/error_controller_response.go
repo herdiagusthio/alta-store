@@ -25,6 +25,15 @@ func NewBadRequestResponse() (int, ControllerResponse) {
 	}
 }
 
+//NewBadRequestResponse bad request format response with message
+func NewBadRequestResponseWithMessage(msg string) (int, ControllerResponse) {
+	return http.StatusBadRequest, ControllerResponse{
+		ErrBadRequest,
+		msg,
+		map[string]interface{}{},
+	}
+}
+
 //NewForbiddenResponse default for Forbidden error response
 func NewForbiddenResponse() (int, ControllerResponse) {
 	return http.StatusForbidden, ControllerResponse{

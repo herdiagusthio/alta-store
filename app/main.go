@@ -1,6 +1,7 @@
 package main
 
 import (
+	"altaStore/api"
 	"altaStore/config"
 	"context"
 	"fmt"
@@ -8,9 +9,12 @@ import (
 	"os/signal"
 	"time"
 
+	AdminsController "altaStore/api/v1/admins"
+	AdminsService "altaStore/business/admins"
+	AdminsRepository "altaStore/modules/admins"
 	migration "altaStore/modules/migration"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -58,42 +62,20 @@ func main() {
 	fmt.Println(config)
 
 	//initialize database connection based on given config
-	newDatabaseConnection(config)
+	dbConnection := newDatabaseConnection(config)
 
-	// //initiate user repository
-	// userRepo := userRepository.NewGormDBRepository(dbConnection)
+	adminRepository := AdminsRepository.InitAdminRepository(dbConnection)
+	adminService := AdminsService.InitAdminService(adminRepository)
+	adminController := AdminsController.InitAdminController(adminService)
 
-	// //initiate user service
-	// userService := userService.NewService(userRepo)
-
-	// //initiate user controller
-	// userController := userController.NewController(userService)
-
-	// //initiate pet repository
-	// petRepo := petRepository.NewGormDBRepository(dbConnection)
-
-	// //initiate pet service
-	// petService := petService.NewService(petRepo)
-
-	// //initiate pet controller
-	// petController := petController.NewController(petService)
-
-	//initiate auth service
-	// authService := authService.NewService(userService)
-
-	//initiate auth controller
-	// authController := authController.NewController(authService)
-
-	//create echo http
 	e := echo.New()
 
 	// //register API path and handler
-	// // api.RegisterPath(e, authController, userController, petController)
+	api.RegisterPath(e, adminController)
 
 	// run server
 	go func() {
 		address := fmt.Sprintf("localhost:%d", config.AppPort)
-
 		if err := e.Start(address); err != nil {
 			log.Info("shutting down the server")
 		}
