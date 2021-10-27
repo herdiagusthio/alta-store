@@ -1,3 +1,4 @@
 .env
 config.go
 .env_local
+app.config.json
