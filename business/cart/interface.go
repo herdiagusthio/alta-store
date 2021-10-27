@@ -4,8 +4,8 @@ package cart
 type Service interface {
 	//AddToCart create new cart if no cart with status active and create cart detail
 	AddToCart(addToCartSpec AddToCartSpec) error
-	// //FindUserByID If data not found will return nil without error
-	// FindUserByID(id int) (*User, error)
+	//Get If data not found will return nil without error
+	GetCartDetailByCartID(cartID uint) ([]CartDetail, error)
 
 	// //FindUserByEmailAndPassword If data not found will return nil
 	// FindUserByEmail(email string) (*User, error)

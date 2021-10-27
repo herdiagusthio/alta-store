@@ -63,3 +63,7 @@ func (s *service) AddToCart(addToCartSpec AddToCartSpec) error {
 
 	return nil
 }
+
+func (s *service) GetCartDetailByCartID(cartID uint) ([]CartDetail, error) {
+	return []CartDetail{}, nil
+}
