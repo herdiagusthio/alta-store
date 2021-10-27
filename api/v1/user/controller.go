@@ -3,6 +3,7 @@ package user
 import (
 	"altaStore/api/common"
 	"altaStore/api/paginator"
+	"altaStore/api/v1/user/request"
 	"altaStore/api/v1/user/response"
 	"altaStore/business/user"
 	"strconv"
@@ -54,21 +55,21 @@ func (controller *Controller) FindAllUser(c echo.Context) error {
 	return c.JSON(common.NewSuccessResponse(response))
 }
 
-// // InsertUser Create new user handler
-// func (controller *Controller) InsertUser(c echo.Context) error {
-// 	insertUserRequest := new(request.InsertUserRequest)
+// InsertUser Create new user handler
+func (controller *Controller) InsertUser(c echo.Context) error {
+	insertUserRequest := new(request.InsertUserRequest)
 
-// 	if err := c.Bind(insertUserRequest); err != nil {
-// 		return c.JSON(common.NewBadRequestResponse())
-// 	}
+	if err := c.Bind(insertUserRequest); err != nil {
+		return c.JSON(common.NewBadRequestResponse())
+	}
 
-// 	err := controller.service.InsertUser(*insertUserRequest.ToUpsertUserSpec(), "creator")
-// 	if err != nil {
-// 		return c.JSON(common.NewErrorBusinessResponse(err))
-// 	}
+	err := controller.service.InsertUser(*insertUserRequest.ToUpsertUserSpec())
+	if err != nil {
+		return c.JSON(common.NewErrorBusinessResponse(err))
+	}
 
-// 	return c.JSON(common.NewSuccessResponseWithoutData())
-// }
+	return c.JSON(common.NewSuccessResponseWithoutData())
+}
 
 // // UpdateUser update existing user handler
 // func (controller *Controller) UpdateUser(c echo.Context) error {

@@ -9,12 +9,20 @@ import (
 	"os/signal"
 	"time"
 
+	addressController "altaStore/api/v1/address"
+	authController "altaStore/api/v1/auth"
+	cartController "altaStore/api/v1/cart"
 	userController "altaStore/api/v1/user"
+	addressService "altaStore/business/address"
+	authService "altaStore/business/auth"
+	cartService "altaStore/business/cart"
 	userService "altaStore/business/user"
+	addressRepository "altaStore/modules/address"
+	cartRepository "altaStore/modules/cart"
 	migration "altaStore/modules/migration"
 	userRepository "altaStore/modules/user"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -36,15 +44,6 @@ func newDatabaseConnection(config *config.AppConfig) *gorm.DB {
 		configDB["DB_Host"],
 		configDB["DB_Port"],
 		configDB["DB_Name"])
-
-	// connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
-	// 	config.DbUsername,
-	// 	config.DbPassword,
-	// 	config.DbAddress,
-	// 	strconv.Itoa(config.DbPort),
-	// 	config.DbName)
-
-	// fmt.Println(connectionString)
 
 	db, e := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
 	if e != nil {
@@ -73,30 +72,35 @@ func main() {
 	//initiate user controller
 	userController := userController.NewController(userService)
 
-	// //initiate pet repository
-	// petRepo := petRepository.NewGormDBRepository(dbConnection)
-
-	// //initiate pet service
-	// petService := petService.NewService(petRepo)
-
-	// //initiate pet controller
-	// petController := petController.NewController(petService)
-
 	//initiate auth service
-	// authService := authService.NewService(userService)
+	authService := authService.NewService(userService)
 
 	//initiate auth controller
-	// authController := authController.NewController(authService)
+	authController := authController.NewController(authService)
+
+	addressRepo := addressRepository.NewGormDBRepository(dbConnection)
+	addressService := addressService.NewService(addressRepo)
+	addressController := addressController.NewController(addressService)
+
+	cartRepo := cartRepository.NewGormDBRepository(dbConnection)
+	cartService := cartService.NewService(cartRepo)
+	cartController := cartController.NewController(cartService)
 
 	//create echo http
 	e := echo.New()
 
 	//register API path and handler
-	api.RegisterPath(e, userController)
+	api.RegisterPath(
+		e,
+		authController,
+		userController,
+		addressController,
+		cartController,
+	)
 
 	// run server
 	go func() {
-		address := fmt.Sprintf("localhost:%d", config.AppPort)
+		address := fmt.Sprintf(":%d", config.AppPort)
 
 		if err := e.Start(address); err != nil {
 			log.Info("shutting down the server")

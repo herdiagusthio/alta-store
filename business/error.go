@@ -14,4 +14,7 @@ var (
 
 	//ErrInvalidSpec Error when data given is not valid on update or insert
 	ErrInvalidSpec = errors.New("Given spec is not valid")
+
+	//ErrLogin Error when email or password is wrong
+	ErrLogin = errors.New("Email or password is incorrect")
 )

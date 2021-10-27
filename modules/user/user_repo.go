@@ -14,11 +14,10 @@ type GormRepository struct {
 
 type User struct {
 	ID          uint   `gorm:"id;primaryKey;autoIncrement"`
-	Name        string `json:"name"  validate:"required" gorm:"type:varchar(100)"`
-	Email       string `json:"email" validate:"required,email" gorm:"type:varchar(50)"`
-	PhoneNumber string `json:"phone_number" validate:"required,number" gorm:"type:varchar(20)"`
-	Username    string `json:"username" validate:"required" gorm:"type:varchar(50)"`
-	Password    string `json:"password"  validate:"required"`
+	Name        string `json:"name"  validate:"required" gorm:"type:varchar(100); not null"`
+	Email       string `json:"email" validate:"required,email" gorm:"type:varchar(50); unique; not null"`
+	PhoneNumber string `json:"phone_number" validate:"required,number" gorm:"type:varchar(20); not null"`
+	Password    string `json:"password"  validate:"required" gorm:"not null"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   *time.Time
@@ -31,7 +30,6 @@ func newUserTable(user user.User) *User {
 		user.Name,
 		user.Email,
 		user.PhoneNumber,
-		user.Username,
 		user.Password,
 		user.CreatedAt,
 		user.UpdatedAt,
@@ -47,7 +45,6 @@ func (col *User) ToUser() user.User {
 	user.Name = col.Name
 	user.Email = col.Email
 	user.PhoneNumber = col.PhoneNumber
-	user.Username = col.Username
 	user.Password = col.Password
 	user.CreatedAt = col.CreatedAt
 	user.UpdatedAt = col.UpdatedAt
@@ -67,7 +64,6 @@ func NewGormDBRepository(db *gorm.DB) *GormRepository {
 func (repo *GormRepository) FindUserByID(id int) (*user.User, error) {
 
 	var userData User
-
 	err := repo.DB.First(&userData, id).Error
 	if err != nil {
 		return nil, err
@@ -78,12 +74,12 @@ func (repo *GormRepository) FindUserByID(id int) (*user.User, error) {
 	return &user, nil
 }
 
-//FindUserByUsernameAndPassword If data not found will return nil without error
-func (repo *GormRepository) FindUserByUsernameAndPassword(username string, password string) (*user.User, error) {
+//FindUserByEmail If data not found will return nil without error
+func (repo *GormRepository) FindUserByEmail(email string) (*user.User, error) {
 
 	var userData User
 
-	err := repo.DB.Where("username = ?", username).Where("password = ?", password).First(&userData).Error
+	err := repo.DB.Where("email = ?", email).First(&userData).Error
 	if err != nil {
 		return nil, err
 	}

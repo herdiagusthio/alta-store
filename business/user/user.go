@@ -7,7 +7,6 @@ type User struct {
 	Name        string
 	Email       string
 	PhoneNumber string
-	Username    string
 	Password    string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
@@ -16,20 +15,16 @@ type User struct {
 
 //NewUser create new User
 func NewUser(
-	id uint,
 	name string,
 	email string,
 	phoneNumber string,
-	username string,
 	password string,
 	createdAt time.Time) User {
 
 	return User{
-		ID:          id,
 		Name:        name,
 		Email:       email,
 		PhoneNumber: phoneNumber,
-		Username:    username,
 		Password:    password,
 		CreatedAt:   createdAt,
 		UpdatedAt:   time.Now(),
@@ -60,7 +55,6 @@ func (oldData *User) ModifyUser(newName string, newPhoneNumber string, newPasswo
 		Name:        name,
 		Email:       oldData.Email,
 		PhoneNumber: phoneNumber,
-		Username:    oldData.Username,
 		Password:    password,
 		CreatedAt:   oldData.CreatedAt,
 		UpdatedAt:   modifiedAt,

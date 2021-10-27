@@ -21,7 +21,7 @@ func NewController(service auth.Service) *Controller {
 	}
 }
 
-//Login by given username and password will return JWT token
+//Login by given email and password will return JWT token
 func (controller *Controller) Login(c echo.Context) error {
 	loginRequest := new(request.LoginRequest)
 
@@ -29,7 +29,7 @@ func (controller *Controller) Login(c echo.Context) error {
 		return c.JSON(common.NewBadRequestResponse())
 	}
 
-	token, err := controller.service.Login(loginRequest.Username, loginRequest.Password)
+	token, err := controller.service.Login(loginRequest.Email, loginRequest.Password)
 	if err != nil {
 		return c.JSON(common.NewErrorBusinessResponse(err))
 	}

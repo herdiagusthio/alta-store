@@ -31,10 +31,9 @@ func NewGetAllUserResponse(users []user.User, page int, rowPerPage int) getAllUs
 		getUserResponse.Name = value.Name
 		getUserResponse.Email = value.Email
 		getUserResponse.PhoneNumber = value.PhoneNumber
-		getUserResponse.Username = value.Username
 		getUserResponse.CreatedAt = value.CreatedAt
 		getUserResponse.UpdatedAt = value.UpdatedAt
-		getUserResponse.DeletedAt = *value.DeletedAt
+		getUserResponse.DeletedAt = value.DeletedAt
 
 		getAllUserResponse.Users = append(getAllUserResponse.Users, getUserResponse)
 	}

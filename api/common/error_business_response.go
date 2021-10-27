@@ -12,6 +12,7 @@ const (
 	errHasBeenModified     errorBusinessResponseCode = "data_has_been modified"
 	errNotFound            errorBusinessResponseCode = "data_not_found"
 	errInvalidSpec         errorBusinessResponseCode = "invalid_spec"
+	errLogin               errorBusinessResponseCode = "unauthorize"
 )
 
 //BusinessResponse default payload response
@@ -37,6 +38,8 @@ func errorMapping(err error) (int, BusinessResponse) {
 		return newValidationResponse(err.Error())
 	case business.ErrHasBeenModified:
 		return newHasBeedModifiedResponse()
+	case business.ErrLogin:
+		return newErrorLogin(err.Error())
 	}
 }
 
@@ -72,6 +75,15 @@ func newValidationResponse(message string) (int, BusinessResponse) {
 	return http.StatusBadRequest, BusinessResponse{
 		errInvalidSpec,
 		"Validation failed " + message,
+		map[string]interface{}{},
+	}
+}
+
+//newErrorLogin failed to Login
+func newErrorLogin(message string) (int, BusinessResponse) {
+	return http.StatusUnauthorized, BusinessResponse{
+		errLogin,
+		message,
 		map[string]interface{}{},
 	}
 }
